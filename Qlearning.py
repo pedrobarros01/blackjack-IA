@@ -15,6 +15,9 @@ class Transiction:
         self.reward = reward
 
 class QLearningModel:
+    ALPHA = 0
+    GAMMA = 0
+    EPSILON = 0.5
     def __init__(self, states: list[str], action: list[str] = ['cavar', 'passar']) -> None:
         #cavar = 0 e passar = 1
         self.Q = defaultdict(list)
@@ -40,8 +43,8 @@ class QLearningModel:
     def choose_action(self):
         pass
 
-    def equation_q_learning(self):
-        pass
+    def equation_q_learning(self, current_q_value, next_q_value, reward):
+        return current_q_value + self.ALPHA * (reward + self.GAMMA *next_q_value - current_q_value)
         
 
         
