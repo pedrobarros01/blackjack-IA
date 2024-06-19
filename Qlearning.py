@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+import random
 class State:
     def __init__(self, sum: int, is_As: str, dealer: str) -> None:
         self.sum = sum
@@ -25,13 +25,15 @@ class QLearningModel:
             action[0]:0,
             action[1]:1
         }
+        self.epsilon = self.EPSILON
+        
         for state in states:
             self.Q[state] = [0, 0]
     
     def print(self):
         pass
 
-    def update_q_table(self):
+    def update_q_table(self, next_state: State, reward: float):
         pass
 
     def best_action(self):
@@ -42,6 +44,7 @@ class QLearningModel:
 
     def choose_action(self):
         pass
+
 
     def equation_q_learning(self, current_q_value, next_q_value, reward):
         return current_q_value + self.ALPHA * (reward + self.GAMMA *next_q_value - current_q_value)
