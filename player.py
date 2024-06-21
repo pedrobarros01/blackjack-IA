@@ -49,7 +49,7 @@ class Player:
     if self.current_state == None:
       self.current_state = transiction.next_state
       self.action = ("hit", 0)
-    if calculate_hand_value(your_hand) <= 21:
+    if is_not_done:
       self.qlearning.update_q_table(transiction.next_state, transiction.reward, self.current_state, self.action)
     game_status = "still going" if is_not_done else "is done" 
     print(f"Your hand ({calculate_hand_value(your_hand)}) after decision '{decision}' with {reward=} and game {game_status}")

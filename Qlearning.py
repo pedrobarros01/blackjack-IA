@@ -15,9 +15,9 @@ class Transiction:
         self.reward = reward
 
 class QLearningModel:
-    ALPHA = 0.5
-    GAMMA = 0.4
-    EPSILON = 0.5
+    ALPHA = 0.1
+    GAMMA = 0.9
+    EPSILON = 0.1
     def __init__(self,  dealer_hand ,action: list[str] = ["hit", "stop"]) -> None:
         #cavar = 0 e passar = 1
         self.states = []
@@ -34,7 +34,7 @@ class QLearningModel:
         self.epsilon = self.EPSILON
         
         for state in self.states:
-            self.Q[state.__str__()] = [0, 0]
+            self.Q[state.__str__()] = [0.5, 0.5]
     
     def print(self):
         print(self.Q)
@@ -42,8 +42,8 @@ class QLearningModel:
     def update_q_table(self, next_state: State, reward: float, state: State, action: str):
         print(action)
         print(self.actions_index)
-        print(next_state)
-        print(state)
+        print(f'proximo estado: {next_state}')
+        print(f'estado atual: {state}')
         index_action = self.actions_index[action[0]]
         maximo_q_next_state = max(self.Q[next_state.__str__()])
         self.Q[state.__str__()][index_action] = self.equation_q_learning(self.Q[state.__str__()][index_action], maximo_q_next_state, reward)
@@ -72,6 +72,7 @@ class QLearningModel:
             escolha = self.random_action(state)
         else:
             escolha = self.best_action(state)
+        
         return escolha
 
 

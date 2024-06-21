@@ -86,7 +86,7 @@ def play_blackjack(player):
     deck = [Card(s,v) for s,v in itertools.product(suits, values)]
     player_hand = []
     dealer_hand = []
-    hand_result = 0.5
+    hand_result = 0
     random.shuffle(deck)
     #print([d for d in deck])
     while running:
@@ -135,7 +135,7 @@ def play_blackjack(player):
                 elif (player_value >= dealer_value):
                   hand_result = +1
                 elif (player_value == dealer_value):
-                  hand_result = 0.5
+                  hand_result = 0
                 else:
                   hand_result = -1
                 #print(f"Round result {hand_result}")                     
@@ -180,8 +180,9 @@ player = Player(qlearning)
 # nenhum problema. O valor de treino
 # em particular geralmente pode ser
 # bem maior.
-training_score = play_n_rounds(player, 50)
-real_score = play_n_rounds(player, 50)
+training_score = play_n_rounds(player, 500)
+print("acabou o treino")
+real_score = play_n_rounds(player, 100)
  
   
 import statistics
