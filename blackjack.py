@@ -180,13 +180,16 @@ player = Player(qlearning)
 # nenhum problema. O valor de treino
 # em particular geralmente pode ser
 # bem maior.
-training_score = play_n_rounds(player, 500)
+training_score = play_n_rounds(player, 100)
 print("acabou o treino")
 real_score = play_n_rounds(player, 100)
  
   
 import statistics
-print(f"Player Expected Value was {statistics.fmean(real_score)} ({statistics.fmean(training_score)} on training)")
+def score(a: list):
+  total = len(a)
+  return (a.count(1) / total)
+print(f"Player Expected Value was {score(real_score)} ({score(training_score)} on training)")
 pygame.time.wait(3000)
 pygame.quit()
 qlearning.print()

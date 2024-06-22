@@ -21,7 +21,7 @@ class QLearningModel:
     def __init__(self,  dealer_hand ,action: list[str] = ["hit", "stop"]) -> None:
         #cavar = 0 e passar = 1
         self.states = []
-        for u in range(2, 22):
+        for u in range(0, 22):
             for d in dealer_hand:
                 state_sem_as = State(u, 'H', d)
                 state_com_as = State(u, 'S', d)
@@ -34,7 +34,7 @@ class QLearningModel:
         self.epsilon = self.EPSILON
         
         for state in self.states:
-            self.Q[state.__str__()] = [0.5, 0.5]
+            self.Q[state.__str__()] = [0.0, 0.0]
     
     def print(self):
         print(self.Q)
@@ -44,7 +44,7 @@ class QLearningModel:
         print(self.actions_index)
         print(f'proximo estado: {next_state}')
         print(f'estado atual: {state}')
-        index_action = self.actions_index[action[0]]
+        index_action = self.actions_index[action]
         maximo_q_next_state = max(self.Q[next_state.__str__()])
         self.Q[state.__str__()][index_action] = self.equation_q_learning(self.Q[state.__str__()][index_action], maximo_q_next_state, reward)
 
@@ -64,6 +64,7 @@ class QLearningModel:
         list_action = self.actions_index.items()
         resultado = filter( lambda x: x[1] == rand, list_action)
         resultado = tuple(resultado)
+        print(resultado)
         return resultado[0]
 
     def choose_action(self, state: State):
@@ -77,7 +78,7 @@ class QLearningModel:
 
 
     def equation_q_learning(self, current_q_value, next_q_value, reward):
-        return current_q_value + self.ALPHA * (reward + self.GAMMA * next_q_value - current_q_value)
+        return (1 - self.ALPHA) * current_q_value + self.ALPHA * (reward + self.GAMMA * next_q_value)
         
 
         
