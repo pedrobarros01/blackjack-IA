@@ -3,8 +3,8 @@ import random
 import itertools
 from utils import calculate_hand_value
 from dealer import DealerPlayer
-from player import Player
-from Qlearning import QLearningModel
+from PlayerRL import RLAgent as Player
+
 # Initialize Pygame
 pygame.init()
 
@@ -28,8 +28,6 @@ suits = ['hearts', 'diamonds', 'clubs', 'spades']
 values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
 player_portrait = pygame.transform.scale(random.choice(portraits), (80, 160))
 dealer_portrait = pygame.transform.scale(random.choice(dealer_portrait_img), (80, 160))
-qlearning = QLearningModel(values)
-qlearning.print()
 
 for suit in suits:
     for value in values:
@@ -132,8 +130,10 @@ def play_blackjack(player):
                   hand_result = -1
                 elif (dealer_value > 21):
                   hand_result = +1
-                elif (player_value >= dealer_value):
+                  player.player_wins += 1
+                elif (player_value > dealer_value):
                   hand_result = +1
+                  player.player_wins += 1
                 elif (player_value == dealer_value):
                   hand_result = 0
                 else:
@@ -158,14 +158,24 @@ def play_blackjack(player):
     return hand_result
 
 
-def play_n_rounds(player, n):
+def play_n_rounds(player, n, real, arq):
+   
     results = []
-    for _ in range(n):
-      results.append(play_blackjack(player))  
+    player.player_wins = 0
+    tamanho_toal = 0
+    for a in range(1, n+1):
+      results.append(play_blackjack(player))
+      tamanho_toal = len(results)
+      if a in [100, 200, 300, 400, 500] and real:
+         arq.write(f'{a} - {(player.player_wins / tamanho_toal) * 100}\n')
     return results
 
+def get_odds(results):
+  t = len(results)
+  return (results.count(1) / t, results.count(-1) / t, results.count(0) / t)
+
 # Insire seu jogador abaixo:
-player = Player(qlearning)
+player = Player()
 
 # Jogamos 100 rodadas de treino 
 # depois disso jogamos 100 rodadas
@@ -177,19 +187,17 @@ player = Player(qlearning)
 # para normalizar os resultados
 # faremos desse jeito. Você
 # pode alterar esses valores sem
-# nenhum problema. O valor de treino
-# em particular geralmente pode ser
-# bem maior.
-training_score = play_n_rounds(player, 100)
-print("acabou o treino")
-real_score = play_n_rounds(player, 100)
- 
-  
+# nenhum problema. Os valores de treino
+# e teste em particular podem (e devem)
+# ser bem maiores.
+arq  = open('grafico.txt', 'r+')
+training_score = play_n_rounds(player, 500, False, arq)
+real_score = play_n_rounds(player, 500, True, arq)
+arq.close()
+
 import statistics
-def score(a: list):
-  total = len(a)
-  return (a.count(1) / total)
-print(f"Player Expected Value was {score(real_score)} ({score(training_score)} on training)")
+print(f'winrate: {(player.player_wins / len(real_score)) * 100} %')
+print(f"Player Expected Value was {get_odds(real_score)} [Training: {get_odds(training_score)}]")
 pygame.time.wait(3000)
 pygame.quit()
-qlearning.print()
+
