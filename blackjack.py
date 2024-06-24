@@ -190,7 +190,7 @@ player = Player()
 # nenhum problema. Os valores de treino
 # e teste em particular podem (e devem)
 # ser bem maiores.
-arq  = open('grafico.txt', 'r+')
+arq  = open('grafico.txt', 'w+')
 training_score = play_n_rounds(player, 500, False, arq)
 real_score = play_n_rounds(player, 500, True, arq)
 arq.close()

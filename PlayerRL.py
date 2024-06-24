@@ -55,6 +55,13 @@ class RLAgent:
     soma_mao = state[0]
     tem_ace = state[1]
     dealer_value = state[2]
+    '''
+    Politica 1:
+          (action == "stop" and soma_mao < 19)
+      or
+      (action == "hit" and soma_mao >= 19)
+    '''
+    #Politica 2
     if(
       (action == "stop" and (soma_mao > 17 and not tem_ace))
       or
