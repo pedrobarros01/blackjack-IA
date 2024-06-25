@@ -58,9 +58,9 @@ class RLAgent:
     dealer_value = state[2]
     '''
     Politica 1:
-          (action == "stop" and soma_mao < 19)
+          (action == "hit" and soma_mao < 19)
       or
-      (action == "hit" and soma_mao >= 19)
+      (action == "stop" and soma_mao >= 19)
     '''
     #Politica 2
     if(
