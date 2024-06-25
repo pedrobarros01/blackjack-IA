@@ -167,7 +167,7 @@ def play_n_rounds(player, n, real, arq):
       results.append(play_blackjack(player))
       tamanho_toal = len(results)
       if a in [100, 200, 300, 400, 500] and real:
-         arq.write(f'{a} - {(player.player_wins / tamanho_toal) * 100}\n')
+         arq.write(f'{a}-{(player.player_wins / tamanho_toal) * 100}\n')
     return results
 
 def get_odds(results):
@@ -191,6 +191,7 @@ player = Player()
 # e teste em particular podem (e devem)
 # ser bem maiores.
 arq  = open('grafico.txt', 'w+')
+arq.write('iter-winrate\n')
 training_score = play_n_rounds(player, 500, False, arq)
 real_score = play_n_rounds(player, 500, True, arq)
 arq.close()

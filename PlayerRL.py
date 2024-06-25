@@ -20,7 +20,7 @@ class RLAgent:
     # Q table
     self.Q = defaultdict(lambda: [0.0, 0.0])
     self.action_list = ["hit", "stop"]
-    
+    self.next_action = "hit"
     self.current_input = None
     self.current_output = None    
     
@@ -48,10 +48,11 @@ class RLAgent:
     return action
     
     
-  def update_qtable(self, state, action, reward, next_state):
+  def update_qtable(self, state, action, reward, next_state, next_action, alg):
     alp = self.alpha
     gam = self.gamma
     action_index = self.action_list.index(action)
+    next_action_index = self.action_list.index(next_action)
     soma_mao = state[0]
     tem_ace = state[1]
     dealer_value = state[2]
@@ -79,10 +80,13 @@ class RLAgent:
       or
       (action == "hit" and (tem_ace and soma_mao < 12))
       ):
-      reward += 0.5
+      reward += 1
     else:
-      reward -= 1.5
-    self.Q[state][action_index] = (1 - alp) * self.Q[state][action_index] + alp * (reward + gam * np.max(self.Q[next_state]))  
+      reward -= 1
+    if alg == 'Q':
+      self.Q[state][action_index] = (1 - alp) * self.Q[state][action_index] + alp * (reward + gam * np.max(self.Q[next_state])) 
+    else:
+      self.Q[state][action_index] = self.Q[state][action_index] + alp + ((reward + gam * self.Q[next_action][next_action_index]) - self.Q[state][action_index])
     
   # Essa função toma a decisão após observar
   # o estado observável do campo
@@ -102,7 +106,8 @@ class RLAgent:
     print(f"{your_hand=}")
     state = self.extract_rl_state(your_hand=your_hand[:-1], dealer_first_card=dealer_first_card)
     next_state = self.extract_rl_state(your_hand=your_hand, dealer_first_card=dealer_first_card)
-    self.update_qtable(state, decision, reward, next_state)
+    self.next_action = self.choose_action(next_state)
+    self.update_qtable(state, decision, reward, next_state, self.next_action, 'S')
     self.print_q_table(self.Q)
     print(f"Your hand ({calculate_hand_value(your_hand)}) after decision '{decision}' with {reward=} and game {game_status}")
 
