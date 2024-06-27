@@ -77,7 +77,8 @@ def play_blackjack(player):
     running = True
     player_turn = False  # True if it's player's turn, False for dealer's turn
     dealer_turn = True
-    
+    # Cada começo de episodio, o SARSA escolhe a ação inicial do estado inicial
+    iteration = True
 
     # Create a deck of cards and deal initial hands
     # [rest of the initial setup is the same]
@@ -111,7 +112,7 @@ def play_blackjack(player):
         elif player_turn:
             # Player's turn logic
             # Implement hit or stand decision
-            decision = player.decision(player_hand, dealer_hand[0])
+            decision = player.decision(player_hand, dealer_hand[0], 'S', iteration)
             if decision == "hit":
                draw_card(deck, player_hand)
             else:
@@ -141,6 +142,7 @@ def play_blackjack(player):
                 #print(f"Round result {hand_result}")                     
                 running = False
             # Decision
+            iteration = False
             print(f"Dealer hidden hand ({dealer_value}): {dealer_hand}")
             decision = player.result(player_hand, dealer_hand[0], decision, hand_result, player_turn)
         
@@ -166,6 +168,7 @@ def play_n_rounds(player, n, real, arq):
     for a in range(1, n+1):
       results.append(play_blackjack(player))
       tamanho_toal = len(results)
+      print(f'winrate: {a}-{(player.player_wins / tamanho_toal) * 100}\n')
       if a in [100, 200, 300, 400, 500] and real:
          arq.write(f'{a}-{(player.player_wins / tamanho_toal) * 100}\n')
     return results

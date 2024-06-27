@@ -11,7 +11,7 @@ class RLAgent:
     # Discount factor - Balanço entre priorizar recompensas futuras e atuais
     self.gamma = 0.9
     # Exploration rate - epsilon greedy
-    self.epsilon = 0.1
+    self.epsilon = 0.05
     # Lembrando a ultima acao
     self.last_opponent_action = None
     # Flag indicando se essa seria a ultima rodada
@@ -58,9 +58,9 @@ class RLAgent:
     dealer_value = state[2]
     '''
     Politica 1:
-          (action == "hit" and soma_mao < 19)
+          (action == "hit" and soma_mao < 17)
       or
-      (action == "stop" and soma_mao >= 19)
+      (action == "stop" and soma_mao >= 17)
     '''
     #Politica 2
     if(
@@ -90,14 +90,20 @@ class RLAgent:
     
   # Essa função toma a decisão após observar
   # o estado observável do campo
-  def decision(self, your_hand, dealer_first_card):
+  def decision(self, your_hand, dealer_first_card, alg, n):
     player_hand = [d for d in your_hand]
     print("======== Start of turn =======")
     print(f"Player hand: {player_hand} vs dealer {dealer_first_card}, ...", ) 
-    state = self.extract_rl_state(your_hand=your_hand, dealer_first_card=dealer_first_card)
-    choice = self.choose_action(state)
-    print(f"You made the decision '{choice}'")
-    return choice
+    if alg == 'Q':
+      state = self.extract_rl_state(your_hand=your_hand, dealer_first_card=dealer_first_card)
+      choice = self.choose_action(state)
+      print(f"You made the decision '{choice}'")
+      return choice
+    else:
+      if n:
+        state = self.extract_rl_state(your_hand=your_hand, dealer_first_card=dealer_first_card)
+        self.next_action = self.choose_action(state)
+      return self.next_action
 
   # Essa função deveria atualiza QTable
   def result(self, your_hand, dealer_first_card, decision, reward, is_not_done):
